@@ -14,7 +14,7 @@ void InputUser()
     char c;
     int i;
     /*Algoritma*/
-    i = 0;
+    i = 1;
     do{
         scanf("%c",&c);
         CKata.TabKata[i] = c;
