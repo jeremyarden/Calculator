@@ -3,7 +3,7 @@
 boolean IsOp(char op)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (op=='+' || op=='/' || op=='*');
 }
@@ -11,7 +11,7 @@ boolean IsOp(char op)
 boolean IsMin(char op)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (op=='-');
 }
@@ -19,7 +19,7 @@ boolean IsMin(char op)
 boolean IsPangkat(char op)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (op=='^');
 }
@@ -27,7 +27,7 @@ boolean IsPangkat(char op)
 boolean IsKurungAwal(char op)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (op=='(');
 }
@@ -35,7 +35,7 @@ boolean IsKurungAwal(char op)
 boolean IsKurungAkhir(char op)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (op==')');
 }
@@ -43,7 +43,7 @@ boolean IsKurungAkhir(char op)
 boolean IsAngka(char num)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (num=='0' || num=='1' || num=='2' || num=='3' || num=='4' || num=='5' || num=='6' || num =='7' || num=='8' || num=='9');
 }
@@ -51,7 +51,7 @@ boolean IsAngka(char num)
 boolean IsTitik(char op)
 {
     /* Kamus */
-    
+
     /* Algoritma */
     return (op=='.');
 }
@@ -60,11 +60,11 @@ void CekSyntax(Kata Kalk, boolean *sError)
 {
     /* Kamus */
     int i;
-    int count;
-    
+    int counttitik,countbuka,counttutup;
+
     /* Algoritma */
     i=1;
-    count=0;
+    counttitik=0; countbuka=0; counttutup=0;
     *sError=false;
     if (Kalk.Length<1) {
         *sError=true;
@@ -81,6 +81,7 @@ void CekSyntax(Kata Kalk, boolean *sError)
         while (i<=Kalk.Length && !(*sError)) {
             if (IsKurungAwal(Kalk.TabKata[i]) && (IsAngka(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]))) {
                 i++;
+                countbuka++;
             }
             else if (IsAngka(Kalk.TabKata[i]) && (IsKurungAkhir(Kalk.TabKata[i+1]) || IsOp(Kalk.TabKata[i+1]) || IsAngka(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]) || IsPangkat(Kalk.TabKata[i+1]) || IsTitik(Kalk.TabKata[i+1]))) {
                 i++;
@@ -94,12 +95,13 @@ void CekSyntax(Kata Kalk, boolean *sError)
             else if (IsMin(Kalk.TabKata[i]) && (IsKurungAwal(Kalk.TabKata[i+1]) || IsAngka(Kalk.TabKata[i+1]))) {
                 i++;
             }
-            else if (IsKurungAkhir(Kalk.TabKata[i]) && (IsOp(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]) || IsPangkat(Kalk.TabKata[i+1]))) {
+            else if (IsKurungAkhir(Kalk.TabKata[i]) && (IsOp(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]) || IsPangkat(Kalk.TabKata[i+1])) || IsKurungAkhir(Kalk.TabKata[i+1])) {
                 i++;
+                counttutup++;
             }
             else if (IsTitik(Kalk.TabKata[i])) {
-                count++;
-                if (count>1) {
+                counttitik++;
+                if (counttitik>1) {
                     *sError=true;
                 }
                 else if (IsAngka(Kalk.TabKata[i+1])) {
@@ -110,8 +112,15 @@ void CekSyntax(Kata Kalk, boolean *sError)
                 }
             }
             else if (i==Kalk.Length) {
-                if (IsAngka(Kalk.TabKata[Kalk.Length]) || IsKurungAkhir(Kalk.TabKata[Kalk.Length])) {
+                if (IsAngka(Kalk.TabKata[Kalk.Length])) {
                     i++;
+                }
+                else if (IsKurungAkhir(Kalk.TabKata[Kalk.Length])) {
+                    i++;
+                    counttutup++;
+                    if (countbuka!=counttutup) {
+                        *sError=true;
+                    }
                 }
                 else {
                     *sError=true;
@@ -128,12 +137,12 @@ void CekMathChar(Kata Kalk, boolean *mError)
 {
     /* Kamus */
     int i;
-    
+
     /* Algoritma */
     i=1;
     *mError=false;
     while (i<=Kalk.Length && !(*mError)) {
-        
+
         if (Kalk.TabKata[i]=='/' && Kalk.TabKata[i+1]=='0') {
             *mError=true;
         }
@@ -162,6 +171,6 @@ void CekMathChar(Kata Kalk, boolean *mError)
             *mError=false;
             i++;
         }
-        
+
     }
 }
