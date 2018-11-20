@@ -20,5 +20,5 @@ void InputUser()
         CKata.TabKata[i] = c;
         i++;
     }while( c != '\n' && i<NMax);
-    CKata.Length = i;
+    CKata.Length = i-2;
 }
