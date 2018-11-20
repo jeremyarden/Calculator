@@ -67,20 +67,17 @@ void CekSyntax(Kata Kalk, boolean *sError)
     count=0;
     *sError=false;
     while (i<=Kalk.Length && !(*sError)) {
-        if ((IsOp(Kalk.TabKata[i]) && IsOp(Kalk.TabKata[i+1])) || (IsOp(Kalk.TabKata[i]) && IsPangkat(Kalk.TabKata[i+1])) || (IsOp(Kalk.TabKata[i]) && IsKurungAkhir(Kalk.TabKata[i+1])) || (IsOp(Kalk.TabKata[i]) && IsMin(Kalk.TabKata[i+1]))) {
-            *sError=true;
+        if (IsKurungAwal(Kalk.TabKata[i]) && (IsAngka(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]))) {
+            *sError=false;
+            i++;
         }
-        else if ((IsPangkat(Kalk.TabKata[i]) && IsOp(Kalk.TabKata[i+1])) || (IsPangkat(Kalk.TabKata[i]) && IsPangkat(Kalk.TabKata[i+1])) || (IsPangkat(Kalk.TabKata[i]) && IsKurungAkhir(Kalk.TabKata[i+1])) || (IsPangkat(Kalk.TabKata[i]) && IsMin(Kalk.TabKata[i+1]))) {
-            *sError=true;
+        else if (IsAngka(Kalk.TabKata[i]) && (IsKurungAkhir(Kalk.TabKata[i+1]) || IsOp(Kalk.TabKata[i+1]) || IsAngka(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]) || IsPangkat(Kalk.TabKata[i+1]))) {
+            *sError=false;
+            i++;
         }
-        else if ((IsKurungAwal(Kalk.TabKata[i]) && IsKurungAkhir(Kalk.TabKata[i+1])) || (IsKurungAwal(Kalk.TabKata[i]) && IsOp(Kalk.TabKata[i+1]))) {
-            *sError=true;
-        }
-        else if (IsKurungAkhir(Kalk.TabKata[i]) && IsKurungAwal(Kalk.TabKata[i+1])) {
-            *sError=true;
-        }
-        else if ((IsMin(Kalk.TabKata[i]) && IsOp(Kalk.TabKata[i+1])) || (IsMin(Kalk.TabKata[i]) && IsMin(Kalk.TabKata[i+1])) || (IsMin(Kalk.TabKata[i]) && IsPangkat(Kalk.TabKata[i+1])) || (IsMin(Kalk.TabKata[i]) && IsKurungAkhir(Kalk.TabKata[i+1]))) {
-            *sError=true;
+        else if (IsPangkat(Kalk.TabKata[i]) && (IsKurungAwal(Kalk.TabKata[i+1]) || IsAngka(Kalk.TabKata[i+1]))) {
+            *sError=false;
+            i++;
         }
         else if (IsTitik(Kalk.TabKata[i])) {
             count++;
@@ -89,8 +86,7 @@ void CekSyntax(Kata Kalk, boolean *sError)
             }
         }
         else {
-            *sError=false;
-            i++;
+            *sError=true;
         }
     }
 }
