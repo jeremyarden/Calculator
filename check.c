@@ -109,6 +109,14 @@ void CekSyntax(Kata Kalk, boolean *sError)
                     *sError=true;
                 }
             }
+            else if (i==Kalk.Length) {
+                if (IsAngka(Kalk.TabKata[Kalk.Length])) {
+                    i++;
+                }
+                else {
+                    *sError=true;
+                }
+            }
             else {
                 *sError=true;
             }
