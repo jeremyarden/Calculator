@@ -8,13 +8,14 @@
 
 double CharToFloat(Kata K);
 boolean IsNumber(char C);
+void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError);
 int i;
 
 int main(int argc, const char * argv[]) {
     /*Kamus*/
     Stack S;
-    boolean Minus, Kali, Bagi,SynErr,MathErr;
-    double num,num2,sum;
+    boolean SynErr,MathErr;
+    double num2,sum;
     /*Algoritma*/
     CreateEmpty(&S);
     InputUser();
@@ -25,50 +26,10 @@ int main(int argc, const char * argv[]) {
     if(!SynErr && !MathErr)
     {
         do{
-            
-            Minus = Karakter(i) == '-';
-            Kali = Karakter(i) == '*';
-            Bagi = Karakter(i) == '/';
-            
-            if(Karakter(i) == '+')
-            {
-                i++;
-                num = CharToFloat(CKata);
-                Push(&S, num);
-            } else if (Minus)
-            {
-                Minus = false;
-                i++;
-                num = CharToFloat(CKata) * -1;
-                Push(&S, num);
-            } else if (Kali)
-            {
-                Kali = false;
-                i++;
-                num = CharToFloat(CKata);
-                Pop(&S, &num2);
-                num *= num2;
-                Push(&S, num);
-            }else if (Bagi)
-            {
-                Bagi = false;
-                i++;
-                num = CharToFloat(CKata);
-                Pop(&S, &num2);
-                num = num2/num;
-                Push(&S, num);
-            } else if(IsNumber(Karakter(i)))
-            {
-                num = CharToFloat(CKata);
-
-                Push(&S, num);
-            } else
-            {
-                i++;
-            }
+            Operate(CKata,Karakter(i),&i, &S, &MathErr);
         }while(!(IsEmpty(S)) && i<=CKata.Length);
+        
         sum = 0;
-
         while (!(IsEmpty(S))) {
             Pop(&S, &num2);
 
@@ -120,7 +81,52 @@ double CharToFloat(Kata K)
     return num;
 }
 
-
+void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
+/*Akan mengisi stack dengan double yang nanti dapat di tambahkan*/
+{
+    boolean Minus,Kali,Bagi;
+    double num,num2;
+    Minus = C == '-';
+    Kali = C == '*';
+    Bagi = C == '/';
+    
+    if(C == '+')
+    {
+        *idx+=1;
+        num = CharToFloat(K);
+        Push(S, num);
+    } else if (Minus)
+    {
+        Minus = false;
+        *idx+=1;
+        num = CharToFloat(K) * -1;
+        Push(S, num);
+    } else if (Kali)
+    {
+        Kali = false;
+        *idx+=1;
+        num = CharToFloat(K);
+        Pop(S, &num2);
+        num *= num2;
+        Push(S, num);
+    }else if (Bagi)
+    {
+        Bagi = false;
+        *idx+=1;
+        num = CharToFloat(K);
+        Pop(S, &num2);
+        num = num2/num;
+        Push(S, num);
+    } else if(IsNumber(Karakter(i)))
+    {
+        num = CharToFloat(CKata);
+        
+        Push(S, num);
+    } else
+    {
+        *idx+=1;
+    }
+}
 
 boolean IsNumber(char C)
 {
