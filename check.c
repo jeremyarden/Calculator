@@ -110,7 +110,7 @@ void CekSyntax(Kata Kalk, boolean *sError)
                 }
             }
             else if (i==Kalk.Length) {
-                if (IsAngka(Kalk.TabKata[Kalk.Length])) {
+                if (IsAngka(Kalk.TabKata[Kalk.Length]) || IsKurungAkhir(Kalk.TabKata[Kalk.Length])) {
                     i++;
                 }
                 else {
