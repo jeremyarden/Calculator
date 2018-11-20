@@ -82,7 +82,7 @@ void CekSyntax(Kata Kalk, boolean *sError)
         else if ((IsMin(Kalk.TabKata[i]) && IsOp(Kalk.TabKata[i+1])) || (IsMin(Kalk.TabKata[i]) && IsMin(Kalk.TabKata[i+1])) || (IsMin(Kalk.TabKata[i]) && IsPangkat(Kalk.TabKata[i+1])) || (IsMin(Kalk.TabKata[i]) && IsKurungAkhir(Kalk.TabKata[i+1]))) {
             *sError=true;
         }
-        else if (IsTitik[i]) {
+        else if (IsTitik(Kalk.TabKata[i])) {
             count++;
             if (count>1) {
                 *sError=true;
@@ -127,7 +127,7 @@ void CekMathChar(Kata Kalk, boolean *mError)
             }
         }
         else if (Kalk.TabKata[i]=='0' && IsPangkat(Kalk.TabKata[i+1]) && Kalk.TabKata[i]=='0') {
-            *mError true;
+            *mError=true;
         }
         else {
             *mError=false;
