@@ -39,7 +39,7 @@ int main(int argc, const char * argv[]) {
         }
         sum = 0;
         while (!(IsEmpty(S))) {
-            printf("%f\n",InfoTop(S).val);
+            printf("%f, %c\n",InfoTop(S).val, InfoTop(S).opr);
             Pop(&S, &ngr);
             if(ngr.opr == 'N')
             {
@@ -98,7 +98,7 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
 {
     boolean Minus,Kali,Bagi;
     double num,num2;
-    infotype ngr,Xout;
+    infotype ngr,Xout, X;
     Minus = C == '-';
     Kali = C == '*';
     Bagi = C == '/';
@@ -106,23 +106,34 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
     if(C == '+')
     {
         *idx+=1;
-        num = CharToFloat(K);
+        /* num = CharToFloat(K);
         ngr.opr = 'N';
         ngr.val = num;
-        Push(S, ngr);
+        Push(S, ngr);*/
     }
     else if (Minus)
     {
         Minus = false;
         *idx+=1;
-        num = CharToFloat(K) * -1;
-        ngr.opr = 'N';
-        ngr.val = num;
-        Push(S, ngr);
+        if (K.TabKata[i] == '(')
+        {
+            Brackets(K, idx, S, mError);
+            Pop(S, &ngr);
+            num = -1 * ngr.val;
+        }
+        else
+        {
+            num = CharToFloat(K) * -1;
+            ngr.opr = 'N';
+            ngr.val = num;
+            Push(S, ngr);
+        }
     }else if (C == '(')
     {
-        Brackets(K, idx, S, mError);
-        
+        X.opr = '(';
+        X.val = 0;
+        Push(S, X);
+        Brackets(K, idx, S, mError);  
     }
     else if (C == '^')
     {
@@ -198,34 +209,27 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
 }
 void Brackets(Kata K,int *idx,Stack *S,boolean *mError)
 {
-    double sum,num;
-    infotype ngr;
+    double sum = 0;
+    infotype ngr, X;
     char C;
     *idx+=1;
     C = K.TabKata[*idx];
-    if(IsKurungAwal(C))
+    
+    Operate(K, C, idx, S, mError);
+    if (C == ')')
     {
-        ngr.opr = '(';
-        ngr.val = -999;
-        Push(S, ngr);
-    } else
-    {
-        while (*idx<=K.Length && K.TabKata[*idx] != ')') {
-            Operate(K, C, idx, S, mError);
-        }
-    }
-    sum = 0;ngr = InfoTop(*S);
-    while (!(IsEmpty(*S)) && ngr.opr == '(') {
         Pop(S, &ngr);
-        if(ngr.opr == 'N')
+        while (ngr.opr != '(')
         {
-            num = ngr.val;
-            sum+=num;
+            sum += ngr.val;
+            Pop(S, &ngr);
         }
+        X.val = sum;
+        X.opr = 'N';
+        Pop(S, &ngr);
+        Push(S, X);
     }
-    ngr.opr = 'N';
-    ngr.val = sum;
-    Push(S, ngr);
+
 }
 void Pangkat(Kata K, int *idx, boolean *mError, infotype *Xout)
 {
