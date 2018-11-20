@@ -79,7 +79,7 @@ void CekSyntax(Kata Kalk, boolean *sError)
         else if (IsOp(Kalk.TabKata[i]) && (IsKurungAwal(Kalk.TabKata[i+1]) || IsAngka(Kalk.TabKata[i+1]))) {
             i++;
         }
-        else if (IsMin(Kalk.TabKata[i]) && (IsKurungAwal(Kalk.TabKata[i+1]) || IsAngka([i+1]))) {
+        else if (IsMin(Kalk.TabKata[i]) && (IsKurungAwal(Kalk.TabKata[i+1]) || IsAngka(Kalk.TabKata[i+1]))) {
             i++;
         }
         else if (IsTitik(Kalk.TabKata[i]) && IsAngka(Kalk.TabKata[i+1])) {
