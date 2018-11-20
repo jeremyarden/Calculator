@@ -7,8 +7,13 @@
 #define Karakter(i) CKata.TabKata[i]
 
 double CharToFloat(Kata K);
+/*Mengubah kumpulan karakter menjadi float */
 boolean IsNumber(char C);
+/*Memeriksa jika karakter adalah sebuah nomor atau bukan*/
 void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError);
+/*Mengoperasikan bilangan-bilangan di taruh dalam stack*/
+void Brackets(Kata K,char C,int *idx,Stack *S,boolean *mError);
+/*Operasi dalam kurung*/
 int i;
 
 int main(int argc, const char * argv[]) {
@@ -95,7 +100,11 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
         *idx+=1;
         num = CharToFloat(K);
         Push(S, num);
-    } else if (Minus)
+    } else if (C == '(')
+    {
+        Brackets(K, C, idx, S, mError);
+    }
+    else if (Minus)
     {
         Minus = false;
         *idx+=1;
@@ -127,7 +136,19 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
         *idx+=1;
     }
 }
-
+void Brackets(Kata K,char C,int *idx,Stack *S,boolean *mError)
+{
+    *idx+=1;
+    if(IsKurungAwal(C))
+    {
+        Brackets(K, C, idx, S, mError);
+    } else
+    {
+        while (*idx<=K.Length && K.TabKata[*idx] != ')') {
+            Operate(K, C, idx, S, mError)  ;
+        }
+    }
+}
 boolean IsNumber(char C)
 {
     return (int)C>=(int)'0' && C<='9';
