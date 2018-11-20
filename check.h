@@ -21,6 +21,9 @@ boolean IsKurungAkhir(char op);
 boolean IsAngka(char num);
 /* Mengecek apakah karakter tersebut berupa angka */
 
+boolean IsTitik(char op);
+/* Mengecek apakah karakter tersebut berupa titik */
+
 void CekSyntax(Kata Kalk, boolean *sError);
 /* Mengecek kebenaran syntax */
 
