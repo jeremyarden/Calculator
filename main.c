@@ -94,13 +94,16 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
     Minus = C == '-';
     Kali = C == '*';
     Bagi = C == '/';
-    
+    Pangkat = C == '^';
+    infotype Xout;
+
     if(C == '+')
     {
         *idx+=1;
         num = CharToFloat(K);
         Push(S, num);
-    } else if (C == '(')
+    } 
+    else if (C == '(')
     {
         Brackets(K, C, idx, S, mError);
     }
@@ -110,7 +113,8 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
         *idx+=1;
         num = CharToFloat(K) * -1;
         Push(S, num);
-    } else if (Kali)
+    } 
+    else if (Kali)
     {
         Kali = false;
         *idx+=1;
@@ -118,7 +122,8 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
         Pop(S, &num2);
         num *= num2;
         Push(S, num);
-    }else if (Bagi)
+    }
+    else if (Bagi)
     {
         Bagi = false;
         *idx+=1;
@@ -126,12 +131,19 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
         Pop(S, &num2);
         num = num2/num;
         Push(S, num);
-    } else if(IsNumber(Karakter(i)))
+    }
+    else if (C == '^')
+    {
+        Pangkat(Kata, idx, mError, &Xout)
+        Push(S, X);
+    } 
+    else if(IsNumber(Karakter(i)))
     {
         num = CharToFloat(CKata);
         
         Push(S, num);
-    } else
+    } 
+    else
     {
         *idx+=1;
     }
@@ -148,6 +160,48 @@ void Brackets(Kata K,char C,int *idx,Stack *S,boolean *mError)
             Operate(K, C, idx, S, mError)  ;
         }
     }
+}
+
+void Pangkat(Kata K, int *idx, boolean *mError, infotype *Xout)
+{
+    Stack S;
+    infotype X, X1;
+    
+    CreateEmpty(&S);
+    *idx -= 1;
+    X.val = 0;
+    X.opr = '(';
+    Push(&S, X);
+    while (*idx <= K.Length && K.TabKata[*idx] != ')')
+    {
+        if (Karakter(*idx) == '^')
+        {
+            *idx++;
+        }
+        else
+        {
+            if (Karakter(*idx) >= '0' && Karakter(*idx) <= '9')
+            {
+                X.val = CharToFloat(Kata);
+                X.opr = 'N';
+            }
+            else if (Karakter(*idx) == '(')
+            {
+                Brackets(K, idx, &S, mError);
+            }
+        }
+    }
+    Pop(&S, &X);
+    Pop(&S, &X1);
+    while (X1.opr != '(')
+    {
+        X.val = pow(X1.val,X.val);
+        Push(&S, X);
+        Pop(&S, &X);
+        Pop(&S, &X1);
+    }
+
+    *Xout = X;
 }
 boolean IsNumber(char C)
 {
