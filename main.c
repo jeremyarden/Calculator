@@ -261,10 +261,10 @@ void Pangkat(Kata K, int *idx, boolean *mError, infotype *Xout)
     infotype X, X1;
     
     CreateEmpty(&S);
-    *idx -= 1;
     X.val = 0;
     X.opr = '(';
     Push(&S, X);
+    Push(&S, *Xout);
     while (*idx <= K.Length && K.TabKata[*idx] != ')')
     {
         if (Karakter(*idx) == '^')
