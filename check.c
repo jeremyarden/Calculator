@@ -77,6 +77,9 @@ void CekSyntax(Kata Kalk, boolean *sError)
             *sError=true;
         }
     }
+    if (!(IsAngka(Kalk.TabKata[1]) && IsKurungAwal(Kalk.TabKata[1]))) {
+        *sError=true;
+    }
     else {
         while (i<=Kalk.Length && !(*sError)) {
             if (IsKurungAwal(Kalk.TabKata[i]) && (IsAngka(Kalk.TabKata[i+1]) || IsMin(Kalk.TabKata[i+1]))) {
