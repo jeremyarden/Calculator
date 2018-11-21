@@ -148,7 +148,7 @@ void CekMathChar(Kata Kalk, boolean *mError)
         }
         else if (IsPangkat(Kalk.TabKata[i])) {
             if (IsKurungAkhir(Kalk.TabKata[i-1])) {
-                if (IsAngka(Kalk.TabKata[i-2]) && IsMin(Kalk.TabKata[i-3])) {
+                if (IsAngka(Kalk.TabKata[i-2]) && IsMin(Kalk.TabKata[i-3]) && Kalk.TabKata[i+1]%2!=0) {
                     *mError=true;
                 }
                 else {
@@ -156,15 +156,12 @@ void CekMathChar(Kata Kalk, boolean *mError)
                     i++;
                 }
             }
-            else if (IsAngka(Kalk.TabKata[i-1]) && IsMin(Kalk.TabKata[i-2])) {
-                *mError=true;
-            }
             else {
                 *mError=false;
                 i++;
             }
         }
-        else if (Kalk.TabKata[i]=='0' && IsPangkat(Kalk.TabKata[i+1]) && Kalk.TabKata[i]=='0') {
+        else if (Kalk.TabKata[i]=='0' && IsPangkat(Kalk.TabKata[i+1]) && Kalk.TabKata[i+2]=='0') {
             *mError=true;
         }
         else {
