@@ -164,11 +164,21 @@ void CekMathChar(Kata Kalk, boolean *mError)
                     i++;
                     if (IsMin(Kalk.TabKata[i])) {
                         i=j;
-                        while (i<=Kalk.Length && !IsTitik(Kalk.TabKata[i+1])) {
-                            i++;
-                        }
-                        if (i!=Kalk.Length) {
-                            *mError=true;
+                        while (i<=Kalk.Length && !*mError) {
+                            if (IsTitik(Kalk.TabKata[i])) {
+                                i++;
+                                while (i<=Kalk.Length && !*mError) {
+                                    if (Kalk.TabKata[i]!='0') {
+                                        *mError=true;
+                                    }
+                                    else {
+                                        i++;
+                                    }
+                                }
+                            }
+                            else {
+                                i++;
+                            }
                         }
                     }
                 }
