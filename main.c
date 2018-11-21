@@ -20,7 +20,7 @@ int i;
 int main(int argc, const char * argv[]) {
     /*Kamus*/
     Stack S;
-    boolean StartRead,SynErr,MathErr;
+    boolean SynErr,MathErr;
     double num2,sum;
     infotype ngr;
     /*Algoritma*/
@@ -32,14 +32,20 @@ int main(int argc, const char * argv[]) {
     if(!SynErr && !MathErr)
     {
         
-
-        while (i<=CKata.Length) {
-                Operate(CKata, Karakter(i), &i, &S, &MathErr);
-            
+        //printf("before:\n");
+        i = 1;
+        while (i<=CKata.Length)
+        {
+            //printf("C = %c, idx = %d\n",Karakter(i),i);
+            Operate(CKata, Karakter(i), &i, &S, &MathErr);
+            //printf("%d ",Top(S));
+            //printf("%.2f\n",InfoTop(S).val);
         }
+        //printf("%d\n",Top(S));
         sum = 0;
+        //printf("after:\n");
         while (!(IsEmpty(S))) {
-            printf("%f, %c\n",InfoTop(S).val, InfoTop(S).opr);
+            //printf("%.2f\n",InfoTop(S).val);
             Pop(&S, &ngr);
             if(ngr.opr == 'N')
             {
@@ -47,7 +53,7 @@ int main(int argc, const char * argv[]) {
                 sum += num2;
             }
         }
-        printf("%.2f\n",sum);
+        printf("Result: %.2f\n",sum);
     }
     else if(SynErr)
     {
@@ -98,7 +104,7 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
 {
     boolean Minus,Kali,Bagi;
     double num,num2;
-    infotype ngr,Xout, X;
+    infotype ngr,Xout;
     Minus = C == '-';
     Kali = C == '*';
     Bagi = C == '/';
@@ -106,20 +112,30 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
     if(C == '+')
     {
         *idx+=1;
-        /* num = CharToFloat(K);
+        //printf("masuk");
+        num = CharToFloat(K);
         ngr.opr = 'N';
         ngr.val = num;
-        Push(S, ngr);*/
+        Push(S, ngr);
     }
     else if (Minus)
     {
         Minus = false;
         *idx+=1;
-        if (K.TabKata[i] == '(')
+        if(K.TabKata[*idx] == '(')
         {
+            ngr.opr = K.TabKata[*idx];
+            ngr.val = -999;
+            Push(S, ngr);
             Brackets(K, idx, S, mError);
+            //printf("%.2f\n",InfoTop(*S).val);
             Pop(S, &ngr);
-            num = -1 * ngr.val;
+            //printf("%f",ngr.val);
+            num = -1*ngr.val;
+            ngr.val = num;
+            ngr.opr = 'N';
+            
+            Push(S, ngr);
         }
         else
         {
@@ -130,10 +146,10 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
         }
     }else if (C == '(')
     {
-        X.opr = '(';
-        X.val = 0;
-        Push(S, X);
-        Brackets(K, idx, S, mError);  
+        ngr.opr = K.TabKata[*idx];
+        ngr.val = -999;
+        Push(S, ngr);
+        Brackets(K, idx, S, mError);
     }
     else if (C == '^')
     {
@@ -145,9 +161,13 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
     {
         Kali = false;
         *idx+=1;
-        if(K.TabKata[i] == '(')
+        if(K.TabKata[*idx] == '(')
         {
+            ngr.opr = K.TabKata[*idx];
+            ngr.val = -999;
+            Push(S, ngr);
             Brackets(K, idx, S, mError);
+            //printf("%f",InfoTop(*S).val);
             Pop(S, &ngr);
             num = ngr.val;
             Pop(S, &ngr);
@@ -172,8 +192,11 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
     {
         Bagi = false;
         *idx+=1;
-        if(K.TabKata[i] == '(')
+        if(K.TabKata[*idx] == '(')
         {
+            ngr.opr = K.TabKata[*idx];
+            ngr.val = -999;
+            Push(S, ngr);
             Brackets(K, idx, S, mError);
             Pop(S, &ngr);
             num = ngr.val;      // setelah tanda bagi
@@ -195,9 +218,9 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
             Push(S, ngr);
         }
     }
-    else if(IsNumber(Karakter(i)))
+    else if(IsNumber(C))
     {
-        num = CharToFloat(CKata);
+        num = CharToFloat(K);
         ngr.val = num;
         ngr.opr = 'N';
         Push(S, ngr);
@@ -214,10 +237,13 @@ void Brackets(Kata K,int *idx,Stack *S,boolean *mError)
     char C;
     *idx+=1;
     C = K.TabKata[*idx];
-    
-    Operate(K, C, idx, S, mError);
+    while (C != ')' && *idx<=K.Length) {
+        Operate(K, C, idx, S, mError);
+        C = K.TabKata[*idx];
+    }
     if (C == ')')
     {
+       // printf("masuk");
         Pop(S, &ngr);
         while (ngr.opr != '(')
         {
@@ -226,10 +252,8 @@ void Brackets(Kata K,int *idx,Stack *S,boolean *mError)
         }
         X.val = sum;
         X.opr = 'N';
-        Pop(S, &ngr);
         Push(S, X);
     }
-
 }
 void Pangkat(Kata K, int *idx, boolean *mError, infotype *Xout)
 {
@@ -249,13 +273,14 @@ void Pangkat(Kata K, int *idx, boolean *mError, infotype *Xout)
         }
         else
         {
-            if (Karakter(*idx) >= '0' && Karakter(*idx) <= '9')
+            if (Karakter(*idx) == '(')
+            {
+                Push(&S, X);
+                Brackets(K, idx, &S, mError);
+            }
+            else
             {
                 Operate(K, K.TabKata[*idx], idx, &S, mError);
-            }
-            else if (Karakter(*idx) == '(')
-            {
-                Brackets(K, idx, &S, mError);
             }
             *idx+=1;
         }
