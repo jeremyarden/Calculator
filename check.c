@@ -154,7 +154,7 @@ void CekMathChar(Kata Kalk, boolean *mError)
                 if (IsAngka(Kalk.TabKata[i-2]) && IsMin(Kalk.TabKata[i-3])) {
                     i++;
                     while (i<=Kalk.Length) {
-                        if (IsAngka(Kalk.TabKata[i]) && IsTitik(Kalk.TabKata[i+1])) {
+                        if (IsAngka(Kalk.TabKata[i]) && IsTitik(Kalk.TabKata[i+1]) && Kalk.TabKata[i+2]!='0') {
                             i++;
                         }
                         else {
