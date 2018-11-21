@@ -32,28 +32,34 @@ int main(int argc, const char * argv[]) {
     if(!SynErr && !MathErr)
     {
         
-        //printf("before:\n");
-        i = 1;
-        while (i<=CKata.Length)
+        //printf("ai:\n");
+        i = 1;MathErr = false;
+        while (i<=CKata.Length && !MathErr)
         {
             //printf("C = %c, idx = %d\n",Karakter(i),i);
             Operate(CKata, Karakter(i), &i, &S, &MathErr);
             //printf("%d ",Top(S));
             //printf("%.2f\n",InfoTop(S).val);
         }
-        //printf("%d\n",Top(S));
-        sum = 0;
-        //printf("after:\n");
-        while (!(IsEmpty(S))) {
-            //printf("%.2f\n",InfoTop(S).val);
-            Pop(&S, &ngr);
-            if(ngr.opr == 'N')
-            {
-                num2 = ngr.val;
-                sum += num2;
+        if(!MathErr)
+        {
+            //printf("%d\n",Top(S));
+            sum = 0;
+            //printf("after:\n");
+            while (!(IsEmpty(S))) {
+                //printf("%.2f\n",InfoTop(S).val);
+                Pop(&S, &ngr);
+                if(ngr.opr == 'N')
+                {
+                    num2 = ngr.val;
+                    sum += num2;
+                }
             }
+            printf("Result: %.2f\n",sum);
+        } else
+        {
+            printf("MATH ERROR\n");
         }
-        printf("Result: %.2f\n",sum);
     }
     else if(SynErr)
     {
@@ -200,12 +206,16 @@ void Operate(Kata K,char C,int *idx,Stack *S,boolean *mError)
             Brackets(K, idx, S, mError);
             Pop(S, &ngr);
             num = ngr.val;      // setelah tanda bagi
-            Pop(S, &ngr);
-            num2 = ngr.val;
-            num = num2/num;
-            ngr.opr = 'N';
-            ngr.val = num;
-            Push(S, ngr);
+            *mError = num == 0;
+            if(!(*mError))
+            {
+                Pop(S, &ngr);
+                num2 = ngr.val;
+                num = num2/num;
+                ngr.opr = 'N';
+                ngr.val = num;
+                Push(S, ngr);
+            }
         }
         else
         {
@@ -287,12 +297,14 @@ void Pangkat(Kata K, int *idx, boolean *mError, infotype *Xout)
     }
     Pop(&S, &X);
     Pop(&S, &X1);
-    while (X1.opr != '(')
+    *mError = X1.val<0 && ((X.val>0)&&(X.val<1));
+    while (X1.opr != '(' && !(*mError))
     {
         X.val = pow(X1.val,X.val);
         Push(&S, X);
         Pop(&S, &X);
         Pop(&S, &X1);
+        *mError = X1.val<0 && ((X.val>0)&&(X.val<1));
     }
     
     *Xout = X;
